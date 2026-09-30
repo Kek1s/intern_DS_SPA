@@ -1,0 +1,4 @@
+# Runtime uses only the Python standard library. These are development tools.
+pytest==8.3.5
+pytest-cov==6.1.1
+ruff==0.11.13

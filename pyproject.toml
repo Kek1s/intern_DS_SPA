@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spa-inventory-assistant"
+version = "1.0.0"
+description = "Deterministic inventory analytics with a conservative Russian query interface"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.5", "pytest-cov==6.1.1", "ruff==0.11.13"]
+
+[tool.setuptools]
+packages = ["spa_assistant"]
+
+[tool.setuptools.package-data]
+spa_assistant = ["catalog.json", "web.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+extend-exclude = [".tools", "docs/source"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

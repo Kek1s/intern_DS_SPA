@@ -1,0 +1,62 @@
+[
+  {
+    "sku": "OIL-001",
+    "name": "Массажное масло базовое (миндаль)",
+    "unit": "л",
+    "pack_size": 5,
+    "min_order_qty": 10,
+    "safety_stock_days": 14,
+    "lead_time_days": 7,
+    "price": 1259.05
+  },
+  {
+    "sku": "OIL-002",
+    "name": "Массажное масло ароматическое (лаванда)",
+    "unit": "л",
+    "pack_size": 1,
+    "min_order_qty": 5,
+    "safety_stock_days": 14,
+    "lead_time_days": 7,
+    "price": 3223.4
+  },
+  {
+    "sku": "SCRB-020",
+    "name": "Скраб для тела кофейный",
+    "unit": "кг",
+    "pack_size": 1,
+    "min_order_qty": 5,
+    "safety_stock_days": 14,
+    "lead_time_days": 10,
+    "price": 1789.5
+  },
+  {
+    "sku": "WRAP-030",
+    "name": "Альгинатная маска для обёртывания",
+    "unit": "кг",
+    "pack_size": 1,
+    "min_order_qty": 5,
+    "safety_stock_days": 14,
+    "lead_time_days": 14,
+    "price": 2437
+  },
+  {
+    "sku": "CONS-051",
+    "name": "Тапочки одноразовые",
+    "unit": "пар",
+    "pack_size": 50,
+    "min_order_qty": 100,
+    "safety_stock_days": 10,
+    "lead_time_days": 5,
+    "price": 45.3
+  },
+  {
+    "sku": "CONS-052",
+    "name": "Шапочки одноразовые",
+    "unit": "шт",
+    "pack_size": 100,
+    "min_order_qty": 200,
+    "safety_stock_days": 10,
+    "lead_time_days": 5,
+    "price": 9.7
+  }
+]

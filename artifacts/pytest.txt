@@ -1,0 +1,24 @@
+........................................................................ [ 46%]
+........................................................................ [ 92%]
+............                                                             [100%]
+- generated xml file: C:\Users\mikha\OneDrive\Desktop\Intern\intern_DS_SPA\artifacts\pytest.xml -
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.10-final-0 _______________
+
+Name                          Stmts   Miss  Cover   Missing
+-----------------------------------------------------------
+spa_assistant\__init__.py         4      0   100%
+spa_assistant\catalog.py         79      4    95%   56, 58, 87, 91
+spa_assistant\config.py          37      0   100%
+spa_assistant\evaluation.py      68      3    96%   45, 48-49
+spa_assistant\forecast.py       182     13    93%   20, 42, 120, 154-155, 186, 205, 207, 220, 227, 233, 247, 289
+spa_assistant\llm.py            113     19    83%   55, 62, 65-67, 78, 86, 99, 120, 139, 142, 182-183, 199-209
+spa_assistant\models.py         103      4    96%   100, 103, 134, 138
+spa_assistant\normalize.py       90      1    99%   100
+spa_assistant\questions.py      200     12    94%   107, 180-181, 209, 250, 273, 275, 280, 352-353, 378, 417
+spa_assistant\report.py          72      0   100%
+spa_assistant\web.py             50     10    80%   44-45, 49, 95-102
+-----------------------------------------------------------
+TOTAL                           998     66    93%
+Coverage JSON written to file artifacts/coverage.json
+156 passed in 6.26s

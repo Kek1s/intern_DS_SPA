@@ -1,0 +1,24 @@
+{
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",
+  "repeats": 300,
+  "mode": "warm, offline, single process; tracemalloc peak is not RSS",
+  "cases": {
+    "normalize_movement": {
+      "median_ms": 0.0412,
+      "p95_ms": 0.0426,
+      "python_peak_kib": 5.0234375
+    },
+    "forecast_demand": {
+      "median_ms": 0.12955,
+      "p95_ms": 0.1439,
+      "python_peak_kib": 7.1025390625
+    },
+    "answer_question": {
+      "median_ms": 0.4578,
+      "p95_ms": 0.4946,
+      "python_peak_kib": 15.232421875
+    }
+  }
+}

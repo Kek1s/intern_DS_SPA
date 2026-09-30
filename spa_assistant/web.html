@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPA · План закупок</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#18352d;background:#f3f5ef;font-size:16px}
+body{max-width:1120px;margin:48px auto;padding:0 24px}h1{font-size:40px;font-weight:650;letter-spacing:-1.5px;margin:8px 0}
+.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#477363}.muted{color:#617268}
+section{background:white;border:1px solid #dbe3d8;border-radius:16px;padding:24px;margin-top:24px}
+.controls{display:flex;gap:16px;align-items:end;flex-wrap:wrap}label{display:grid;gap:7px;font-size:14px}
+input,select,button{font:inherit;padding:11px;border-radius:8px;border:1px solid #b9cabe}input{max-width:100%}
+button{background:#245b45;color:white;cursor:pointer;border-color:#245b45}button:hover{background:#183c2e}
+.summary{display:flex;gap:32px;margin:24px 0}.amount{font-size:30px;font-weight:650}.scroll{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #e1e8df;white-space:nowrap}
+th{font-size:12px;text-transform:uppercase;color:#617268}details{margin:12px 0}summary{cursor:pointer}
+.warning{color:#805518}#answer,#explanations details p{white-space:pre-wrap;line-height:1.65;overflow-wrap:anywhere}#question{width:100%;box-sizing:border-box}
+.chat-controls{display:flex;gap:10px;margin-top:12px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e8f0e5;font-size:12px}
+@media(max-width:600px){body{margin-top:24px;padding:0 12px}h1{font-size:30px}section{padding:16px}.summary{display:block}}
+</style>
+<header><div class="eyebrow">Mountain & Sea Spa · аналитический прототип</div>
+<h1>От остатка к плану закупок</h1>
+<p class="muted">Демонстрационные данные на 15 сентября 2026. Расчёты по трём позициям общего склада.</p></header>
+<section>
+<form id="plan-form" class="controls">
+<label>Период<select id="horizon"><option value="30">30 дней</option><option value="90" selected>Квартал · 90 дней</option><option value="180">Полгода · 180 дней</option><option value="365">Год · 365 дней</option></select></label>
+<label>Бюджетный лимит, ₽<input id="budget" type="number" min="0" step="0.01" placeholder="Не установлен"></label>
+<label>Поставки без даты<select id="credit"><option value="yes">Условно учесть в периоде</option><option value="no">Не вычитать из потребности</option></select></label>
+<button>Рассчитать план</button></form>
+<div class="summary"><div><span class="muted">Рекомендуемая закупка</span><div id="total" class="amount">—</div></div><div><span class="muted">Превышение лимита</span><div id="gap" class="amount">—</div></div></div>
+<p id="coverage" class="muted"></p>
+<div class="scroll"><table><thead><tr><th>SKU</th><th>Остаток</th><th>Потребность</th><th>Закупить</th><th>Стоимость</th><th>Риск дефицита</th><th>Уверенность</th></tr></thead><tbody id="rows"></tbody></table></div>
+<div id="explanations"></div><p id="error" class="warning" role="alert"></p>
+</section>
+<section><span class="badge">Русский язык · GigaChat при настройке ключа</span><h2>Уточните закупку</h2>
+<p class="muted">Укажите товар и период. Например: «Посчитай закупку скраба на полгода при лимите 200 тысяч».</p>
+<form id="chat-form"><input id="question" aria-label="Вопрос" required maxlength="10000" value="Сколько OIL-001 закупить на три месяца и сколько это будет стоить?">
+<div class="chat-controls"><button>Рассчитать ответ</button><button id="reset" type="button">Новый диалог</button></div></form>
+<p id="status" class="muted"></p><div id="answer" aria-live="polite"></div></section>
+<p class="muted">Без автоматического размещения заказов. Период — число дней от даты данных, цены постоянны. Даты дефицита не учитывают недатированные поставки.</p>
+<script>
+const $=id=>document.getElementById(id), money=x=>x===null?'Не задан':new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB'}).format(x), num=x=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(x);
+let previous=null;
+async function post(path,data){const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'Ошибка запроса');return result;}
+async function plan(event){if(event)event.preventDefault();$('error').textContent='';try{
+const data=await post('/api/plan',{horizon_days:Number($('horizon').value),budget_limit:$('budget').value===''?null:Number($('budget').value),credit_undated_incoming:$('credit').value==='yes'});
+$('total').textContent=money(data.estimated_cost);$('gap').textContent=money(data.budget_gap);$('coverage').textContent='Не включены из-за отсутствия истории: '+data.missing_skus.join(', ');$('rows').replaceChildren();$('explanations').replaceChildren();
+for(const row of data.items){const tr=document.createElement('tr');for(const value of [row.sku,num(row.current_stock)+' '+row.unit,num(row.forecast_demand),num(row.recommended_qty)+' '+row.unit,money(row.estimated_cost),row.stockout_date||'Нет расхода',num(row.confidence)]){const td=document.createElement('td');td.textContent=value;tr.append(td);}$('rows').append(tr);const details=document.createElement('details'),title=document.createElement('summary'),body=document.createElement('p');title.textContent=row.sku+' · '+(row.requires_clarification?'Требуется уточнение':'Объяснение расчёта');body.textContent=row.explanation;details.append(title,body);$('explanations').append(details);}
+}catch(error){$('error').textContent=error.message;}}
+$('plan-form').addEventListener('submit',plan);
+const llmLabel=status=>status==='ok'?'GigaChat ответил на классификацию':status==='not_configured'?'GigaChat не настроен':status==='invalid_auth_key'?'GigaChat: неверный формат ключа':status==='invalid_scope'?'GigaChat: неверный scope':status.startsWith('oauth_http_')?'GigaChat: ошибка авторизации HTTP '+status.slice(11):status.startsWith('chat_http_')?'GigaChat: ошибка запроса HTTP '+status.slice(10):status.endsWith('_tls_error')?'GigaChat: ошибка TLS-сертификата':status.endsWith('_timeout')?'GigaChat: таймаут':status.endsWith('_dns_error')?'GigaChat: ошибка DNS':status.endsWith('_connection_error')?'GigaChat: ошибка подключения':status.includes('invalid_response')?'GigaChat: неверный ответ API':status==='ollama_ok'?'Ollama подключён':status==='ollama_unavailable'?'Ollama недоступен':'LLM недоступна';
+const answerStatus=status=>({ok:'Ответ рассчитан',provisional:'Предварительный расчёт',clarification_required:'Нужно уточнить вопрос',data_unavailable:'Недостаточно данных'})[status]||status;
+$('chat-form').addEventListener('submit',async event=>{event.preventDefault();$('status').textContent='Расчёт…';try{const data=await post('/api/question',{question:$('question').value,previous_params:previous});$('answer').textContent=data.answer;$('status').textContent=answerStatus(data.parameters.status)+' · уверенность '+num(data.confidence)+' · '+llmLabel(data.parameters.llm_status)+' · тип вопроса: '+(data.parameters.router==='gigachat'?'GigaChat':'правила');if(data.parameters.intent!=='unknown')previous=data.parameters;}catch(error){$('status').textContent=error.message;}});
+$('reset').addEventListener('click',()=>{previous=null;$('answer').textContent='';$('status').textContent='Контекст очищен';});plan();
+</script></html>

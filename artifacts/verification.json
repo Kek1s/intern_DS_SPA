@@ -1,0 +1,7 @@
+{
+  "pytest": "PASS",
+  "ruff_check": "PASS",
+  "ruff_format": "PASS",
+  "tests_passed": 156,
+  "line_coverage_percent": 93.39
+}
